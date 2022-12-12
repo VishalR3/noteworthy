@@ -1,3 +1,7 @@
+# NoteWorthy
+
+A web-based note taking application that stores all your notes on your machine only. Your data is completely safe with you only.
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
