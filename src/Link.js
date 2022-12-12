@@ -119,6 +119,7 @@ const Link = React.forwardRef(function Link(props, ref) {
       component={NextLinkComposed}
       className={className}
       ref={ref}
+      style={{ textDecoration: "none" }}
       {...nextjsProps}
       {...other}
     />

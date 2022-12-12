@@ -11,6 +11,10 @@ const Add = () => {
       const id = await db.notes.add({
         title: data.title,
         content: data.content,
+        parent: null,
+        children: [],
+        created_at: new Date(),
+        updated_at: new Date(),
       });
       console.log("Added note with id: " + id);
     } catch (e) {
@@ -48,6 +52,7 @@ const Add = () => {
             </Button>
           </form>
         </Grid>
+        <Grid></Grid>
       </Grid>
     </>
   );

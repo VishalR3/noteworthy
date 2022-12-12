@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
+import AppLayout from "../src/layouts/AppLayout";
 
 export default function Home() {
   return (
@@ -12,3 +13,5 @@ export default function Home() {
     </>
   );
 }
+
+Home.getLayout = (page) => <AppLayout>{page}</AppLayout>;
