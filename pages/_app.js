@@ -10,6 +10,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <Head>
+        <title>NoteWorthy</title>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>

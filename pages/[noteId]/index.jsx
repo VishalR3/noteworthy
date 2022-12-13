@@ -1,4 +1,5 @@
 import { useLiveQuery } from "dexie-react-hooks";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { db } from "../../db/db";
 import AppLayout from "../../src/layouts/AppLayout";
@@ -13,6 +14,9 @@ const NotePage = () => {
   );
   return (
     <div>
+      <Head>
+        <title>{note.title} - NoteWorthy</title>
+      </Head>
       <h1>{note?.title}</h1>
       {Array.isArray(note?.content) ? (
         note?.content.map((c, index) => <p key={index}>{c}</p>)
