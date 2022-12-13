@@ -11,11 +11,14 @@ const NotePage = () => {
     async () => await db.notes.get({ id: Number(noteId ?? 0) }),
     [noteId]
   );
-  console.log(note, noteId ?? 0);
   return (
     <div>
       <h1>{note?.title}</h1>
-      <p>{note?.content}</p>
+      {Array.isArray(note?.content) ? (
+        note?.content.map((c, index) => <p key={index}>{c}</p>)
+      ) : (
+        <p>{note?.content}</p>
+      )}
     </div>
   );
 };

@@ -26,10 +26,15 @@ export default function AppLayout({ children }) {
     <>
       <PositionedBody>
         <Grid container spacing={3}>
-          <Grid item md={sidebarWidth}>
+          <Grid item xs={12} md={sidebarWidth}>
             <Sidebar />
           </Grid>
-          <Grid item md={12 - sidebarWidth} sx={{ position: "relative" }}>
+          <Grid
+            item
+            xs={12}
+            md={12 - sidebarWidth}
+            sx={{ position: "relative" }}
+          >
             <Header />
             <ScrollableBody>{children}</ScrollableBody>
           </Grid>
