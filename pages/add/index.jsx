@@ -6,12 +6,16 @@ import AppLayout from "../../src/layouts/AppLayout";
 
 const Content = ({ content, setContent, index }) => {
   const [val, setVal] = useState(index == content.length ? "" : content[index]);
+  useEffect(() => {
+    setVal(index == content.length ? "" : content[index]);
+  }, [content]);
   return (
     <>
       <TextField
         variant="outlined"
         value={val}
         label="content"
+        placeholder={content[index]}
         fullWidth
         sx={{ mt: 3 }}
         onChange={(e) => {
@@ -31,6 +35,10 @@ const Content = ({ content, setContent, index }) => {
               setContent(newContent);
               setVal("");
             } else {
+              console.log(index);
+              const newContent = [...content];
+              newContent.splice(index + 1, 0, "");
+              setContent(newContent);
             }
           }
         }}

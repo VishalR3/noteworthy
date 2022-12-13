@@ -15,7 +15,7 @@ const NotePage = () => {
   return (
     <div>
       <Head>
-        <title>{note.title} - NoteWorthy</title>
+        <title>{note?.title} - NoteWorthy</title>
       </Head>
       <h1>{note?.title}</h1>
       {Array.isArray(note?.content) ? (
