@@ -4,6 +4,10 @@ import { Grid, Stack, styled, Typography } from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../../db/db";
 import Link from "../Link";
+const StyledStack = styled(Stack)(({ theme }) => ({
+  overflowY: "scroll",
+  height: "calc(100vh - 150px)",
+}));
 
 const Item = styled("div")(({ theme }) => ({
   borderRadius: 5,
@@ -65,11 +69,11 @@ const ViewNotes = () => {
 
   return (
     <>
-      <Stack spacing={1}>
+      <StyledStack spacing={1}>
         {notes?.map((note) => (
           <RenderNote note={note} key={note.id} />
         ))}
-      </Stack>
+      </StyledStack>
     </>
   );
 };

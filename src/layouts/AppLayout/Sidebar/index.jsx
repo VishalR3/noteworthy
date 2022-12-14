@@ -29,7 +29,7 @@ const AddNoteBtn = styled("div")(({ theme }) => ({
   padding: theme.spacing(1),
   borderRadius: theme.spacing(1),
   position: "absolute",
-  bottom: theme.spacing(2),
+  bottom: theme.spacing(3),
   left: theme.spacing(2),
   width: "calc(100% - 32px)",
   "&:hover": {

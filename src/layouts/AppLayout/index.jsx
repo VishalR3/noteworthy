@@ -38,6 +38,22 @@ const PositionedBody = styled("div")(({ theme }) => ({
   height: "100vh",
   width: "100vw",
   overflow: "hidden",
+
+  "& ::-webkit-scrollbar": {
+    width: "20px",
+  },
+  "& ::-webkit-scrollbar-track": {
+    backgroundColor: `transparent`,
+  },
+  "& ::-webkit-scrollbar-thumb": {
+    backgroundColor: `transparent`,
+    borderRadius: `20px`,
+    border: `6px solid transparent`,
+    backgroundClip: `content-box`,
+  },
+  "& ::-webkit-scrollbar-thumb:hover": {
+    backgroundColor: `#a8bbbf`,
+  },
 }));
 const ScrollableBody = styled("div")(({ theme }) => ({
   height: "100%",
