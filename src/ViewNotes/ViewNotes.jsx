@@ -65,7 +65,7 @@ const ViewNotes = () => {
 
   return (
     <>
-      <Stack container spacing={1}>
+      <Stack spacing={1}>
         {notes?.map((note) => (
           <RenderNote note={note} key={note.id} />
         ))}

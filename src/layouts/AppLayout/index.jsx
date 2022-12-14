@@ -1,7 +1,37 @@
-import { Grid, styled } from "@mui/material";
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { Drawer, Grid, IconButton, styled } from "@mui/material";
 import { useState } from "react";
 import Header from "./Header/Header";
 import Sidebar from "./Sidebar";
+
+const drawerWidth = 240;
+
+const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
+  ({ theme, open }) => ({
+    flexGrow: 1,
+    height: "100vh",
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    marginLeft: 0,
+    ...(open && {
+      transition: theme.transitions.create("margin", {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+      marginLeft: `${drawerWidth}px`,
+    }),
+  })
+);
+const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+  justifyContent: "flex-end",
+}));
 
 const PositionedBody = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -21,24 +51,30 @@ const ScrollableBody = styled("div")(({ theme }) => ({
 }));
 
 export default function AppLayout({ children }) {
-  const [sidebarWidth, setSidebarWidth] = useState(1.5);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   return (
     <>
       <PositionedBody>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={sidebarWidth}>
-            <Sidebar />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            md={12 - sidebarWidth}
-            sx={{ position: "relative" }}
-          >
-            <Header />
-            <ScrollableBody>{children}</ScrollableBody>
-          </Grid>
-        </Grid>
+        <Drawer
+          sx={{
+            position: "relative",
+            width: drawerWidth,
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: drawerWidth,
+              boxSizing: "border-box",
+            },
+          }}
+          variant="persistent"
+          anchor="left"
+          open={sidebarOpen}
+        >
+          <Sidebar />
+        </Drawer>
+        <Main open={sidebarOpen} sx={{ position: "relative" }}>
+          <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <ScrollableBody>{children}</ScrollableBody>
+        </Main>
       </PositionedBody>
     </>
   );
