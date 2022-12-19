@@ -64,7 +64,7 @@ function MyApp({ Component, pageProps }) {
           content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
         />
       </Head>
-      <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>
+      <ThemeProvider theme={prefersDarkMode ? lightTheme : lightTheme}>
         <CssBaseline />
         {getLayout(<Component {...pageProps} />)}
       </ThemeProvider>

@@ -1,5 +1,6 @@
 import { Avatar, Box, styled, Typography } from "@mui/material";
 import { useRouter } from "next/router";
+import { db } from "../../../../db/db";
 import Link from "../../../Link";
 import ViewNotes from "../../../ViewNotes/ViewNotes";
 
@@ -39,6 +40,19 @@ const AddNoteBtn = styled("div")(({ theme }) => ({
 
 const Sidebar = () => {
   const { pathname } = useRouter();
+  const router = useRouter();
+  const addNote = async () => {
+    const id = await db.notes.add({
+      title: "Untitled",
+      content: "",
+      parent: null,
+      children: [],
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
+    console.log("Added note with id: " + id);
+    router.push(`/${id}`);
+  };
 
   return (
     <SidebarWrapper>
@@ -50,10 +64,10 @@ const Sidebar = () => {
       <Box mt={3}>
         <ViewNotes />
       </Box>
-      <AddNoteBtn>
-        <Link href="/add">
-          <Typography variant="body1">Add Note</Typography>
-        </Link>
+      <AddNoteBtn onClick={addNote}>
+        {/* <Link href="/add"> */}
+        <Typography variant="body1">Add Note</Typography>
+        {/* </Link> */}
       </AddNoteBtn>
     </SidebarWrapper>
   );
