@@ -1,29 +1,32 @@
-import { Button, CircularProgress, Grid } from "@mui/material";
-import { useLiveQuery } from "dexie-react-hooks";
+import { Button, Grid } from "@mui/material";
+import { useRouter } from "next/router";
 import { useRef, useCallback, useEffect, useState } from "react";
 import { createReactEditorJS } from "react-editor-js";
+import { useDispatch, useSelector } from "react-redux";
 import { db } from "../../db/db";
+import { sagaActions } from "../../store/sagaActions";
 import config from "../config";
 import { EDITOR_JS_TOOLS } from "../tools";
 
 const ReactEditorJS = createReactEditorJS();
 
-const RenderNote = ({ noteId, note }) => {
-  const [saving, setSaving] = useState(false);
+const RenderNote = () => {
+  const note = useSelector((state) => state.notes.currentNote);
+  const isNoteChanged = useSelector((state) => state.notes.isNoteChanged);
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { noteId } = router.query;
   const editorCore = useRef(null);
 
-  const handleInitialize = useCallback(
-    (instance) => {
-      editorCore.current = instance;
-    },
-    [noteId]
-  );
+  const handleInitialize = useCallback((instance) => {
+    editorCore.current = instance;
+  }, []);
   const handleReady = useCallback(async () => {
     editorCore.current.clear();
-  }, [noteId]);
+    dispatch({ type: sagaActions.EDITOR_READY });
+  }, []);
 
   const handleSave = useCallback(async () => {
-    setSaving(true);
     const savedData = await editorCore.current.save();
     console.log(savedData);
     await db.notes
@@ -31,23 +34,29 @@ const RenderNote = ({ noteId, note }) => {
       .then((res) => {
         console.log("Updated", res);
       });
-
-    setSaving(false);
   }, [noteId]);
 
-  const renderEditor = useCallback(async () => {
+  const handleChange = async () => {
+    const savedData = await editorCore.current.save();
+    dispatch({
+      type: sagaActions.CHANGE_NOTE,
+      payload: {
+        data: savedData,
+      },
+    });
+  };
+
+  const renderEditor = async () => {
     if (editorCore.current) {
       editorCore.current.dangerouslyLowLevelInstance?.isReady.then(() => {
-        editorCore.current.clear();
+        // editorCore.current.clear();
         if (note.title && note.content?.blocks?.length) {
           editorCore.current?.render(note?.content);
+          dispatch({ type: sagaActions.NOTE_RENDERED });
         }
-        editorCore.current.dangerouslyLowLevelInstance?.on("blur", () => {
-          console.log("blur");
-        });
       });
     }
-  }, [noteId, note]);
+  };
 
   const handleTitleChange = useCallback(
     (e) => {
@@ -56,18 +65,15 @@ const RenderNote = ({ noteId, note }) => {
     [noteId]
   );
 
-  const handleKeyDown = useCallback(
-    (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        if (editorCore.current)
-          editorCore.current.dangerouslyLowLevelInstance?.isReady.then(() => {
-            editorCore.current.dangerouslyLowLevelInstance?.caret.focus(true);
-          });
-      }
-    },
-    [noteId]
-  );
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (editorCore.current)
+        editorCore.current.dangerouslyLowLevelInstance?.isReady.then(() => {
+          editorCore.current.dangerouslyLowLevelInstance?.caret.focus(true);
+        });
+    }
+  }, []);
 
   useEffect(() => {
     if (!note) return;
@@ -91,14 +97,7 @@ const RenderNote = ({ noteId, note }) => {
         </Grid>
         <Grid item>
           <Button variant="contained" onClick={() => handleSave()}>
-            {saving ? (
-              <>
-                <CircularProgress />
-                Saving
-              </>
-            ) : (
-              "Save"
-            )}
+            {isNoteChanged ? <>Saving</> : "Saved"}
           </Button>
         </Grid>
       </Grid>
@@ -106,6 +105,7 @@ const RenderNote = ({ noteId, note }) => {
         tools={EDITOR_JS_TOOLS}
         onInitialize={handleInitialize}
         onReady={handleReady}
+        onChange={() => handleChange()}
       />
     </>
   );
