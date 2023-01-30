@@ -1,6 +1,8 @@
 import PropTypes from "prop-types";
 import { CssBaseline, ThemeProvider, useMediaQuery } from "@mui/material";
 import Head from "next/head";
+import store from "../store/store";
+import { Provider } from "react-redux";
 import lightTheme from "../styles/theme/lightTheme";
 import darkTheme from "../styles/theme/darkTheme";
 
@@ -64,10 +66,12 @@ function MyApp({ Component, pageProps }) {
           content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
         />
       </Head>
-      <ThemeProvider theme={prefersDarkMode ? lightTheme : lightTheme}>
-        <CssBaseline />
-        {getLayout(<Component {...pageProps} />)}
-      </ThemeProvider>
+      <Provider store={store}>
+        <ThemeProvider theme={prefersDarkMode ? lightTheme : lightTheme}>
+          <CssBaseline />
+          {getLayout(<Component {...pageProps} />)}
+        </ThemeProvider>
+      </Provider>
     </>
   );
 }

@@ -4,30 +4,23 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { db } from "../../db/db";
 import AppLayout from "../../src/layouts/AppLayout";
 import { PAGESTATE } from "../../src/utils";
+import { sagaActions } from "../../store/sagaActions";
 
 const RenderDynamicNote = dynamic(() => import("../../src/notes/RenderNote"), {
   ssr: false,
 });
 
 const NotePage = () => {
-  const [pageState, setPageState] = useState(PAGESTATE.loading);
+  const dispatch = useDispatch();
   const router = useRouter();
   const { noteId } = router.query;
-  const [freezedNote, setFreezedNote] = useState(null);
-  const note = useLiveQuery(
-    async () =>
-      await db.notes.get({ id: Number(noteId ?? 0) }).then((data) => {
-        return data;
-      }),
-    [noteId]
-  );
 
   useEffect(() => {
-    if (!isNaN(noteId)) setPageState(PAGESTATE.loaded);
-    else setPageState(PAGESTATE.loading);
+    dispatch({ type: sagaActions.FETCH_NOTE, payload: noteId });
   }, [noteId]);
 
   return (
@@ -36,7 +29,7 @@ const NotePage = () => {
         <title> NoteWorthy</title>
       </Head> */}
 
-      {!isNaN(noteId) && <RenderDynamicNote noteId={noteId} note={note} />}
+      {!isNaN(noteId) && <RenderDynamicNote />}
     </div>
   );
 };
