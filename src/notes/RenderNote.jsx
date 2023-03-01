@@ -4,8 +4,8 @@ import { useRef, useCallback, useEffect, useState } from "react";
 import { createReactEditorJS } from "react-editor-js";
 import { useDispatch, useSelector } from "react-redux";
 import { db } from "../../db/db";
+import { setIsNoteChanged } from "../../store/features/notesReducer";
 import { sagaActions } from "../../store/sagaActions";
-import config from "../config";
 import { EDITOR_JS_TOOLS } from "../tools";
 
 const ReactEditorJS = createReactEditorJS();
@@ -17,6 +17,7 @@ const RenderNote = () => {
   const router = useRouter();
   const { noteId } = router.query;
   const editorCore = useRef(null);
+  const changeTimeRef = useRef(null);
 
   const handleInitialize = useCallback((instance) => {
     editorCore.current = instance;
@@ -36,14 +37,18 @@ const RenderNote = () => {
       });
   }, [noteId]);
 
-  const handleChange = async () => {
-    const savedData = await editorCore.current.save();
-    dispatch({
-      type: sagaActions.CHANGE_NOTE,
-      payload: {
-        data: savedData,
-      },
-    });
+  const handleChange = () => {
+    dispatch(setIsNoteChanged(true));
+    clearTimeout(changeTimeRef.current);
+    changeTimeRef.current = setTimeout(async () => {
+      const savedData = await editorCore.current.save();
+      dispatch({
+        type: sagaActions.CHANGE_NOTE,
+        payload: {
+          data: savedData,
+        },
+      });
+    }, 500);
   };
 
   const renderEditor = async () => {
@@ -52,6 +57,10 @@ const RenderNote = () => {
         // editorCore.current.clear();
         if (note.title && note.content?.blocks?.length) {
           editorCore.current?.render(note?.content);
+          dispatch({ type: sagaActions.NOTE_RENDERED });
+        }
+        if (note.title && note.content === "") {
+          editorCore.current?.clear();
           dispatch({ type: sagaActions.NOTE_RENDERED });
         }
       });
