@@ -19,8 +19,6 @@ import { sagaActions } from "../sagaActions";
 function* changeNote(action) {
   const { data } = action.payload;
   console.log("changeNote");
-  yield put(setIsNoteChanged(true));
-  yield delay(1000);
   let note = yield select((state) => state.notes.currentNote);
   note = { ...note, updatedContent: data };
   yield put(setUpdatedNote(note));
